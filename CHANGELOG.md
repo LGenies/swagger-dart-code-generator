@@ -1,4 +1,91 @@
-# 2.11.8
+# 3.0.1
+
+* Different fixes and improvements
+
+# 3.0.0
+* ***Breaking*** Added support of Chopper 8.0
+
+* Fixed generation of keywords in JsonKeys ([#734](https://github.com/epam-cross-platform-lab/swagger-dart-code-generator/issues/734))
+
+# 2.15.2
+
+* Fixed generation of some complex `allOf` chains
+
+# 2.15.1
+
+* Fixed some issues
+
+# 2.15.0
+
+* Changed option `enums_case_sensitive` to correctly default to `true` as stated in documentation
+* Fixed option `enums_case_sensitive` to work with nullable deserializers when set to `false`
+* Modernized `example/`
+* Bump `package:json_annotation` to `^4.8.1`
+
+# 2.14.2
+
+* Added option `generate_first_succeed_response` to generate first succeed response or `dynamic` ([#703](https://github.com/epam-cross-platform-lab/swagger-dart-code-generator/issues/703))
+
+# 2.14.1
+
+* ***Breaking*** Added ability to rename downloaded swagger files ([#558](https://github.com/epam-cross-platform-lab/swagger-dart-code-generator/issues/558))
+
+* Added support of deprecated fields and methods ([#699](https://github.com/epam-cross-platform-lab/swagger-dart-code-generator/issues/699))
+
+# 2.13.5
+
+* Added `ErrorConverter` to create method
+
+# 2.13.4
+
+* Make `readOnly` and `writeOnly` fields as `nullable` and `not required` ([#487](https://github.com/epam-cross-platform-lab/swagger-dart-code-generator/issues/487))
+* Added support of `DateTime` query parameters ([#694](https://github.com/epam-cross-platform-lab/swagger-dart-code-generator/issues/694))
+
+# 2.13.3
+
+* Some fixes and improvements
+
+# 2.13.2
+
+* Fixed generation key word parameter names ([#685](https://github.com/epam-cross-platform-lab/swagger-dart-code-generator/issues/685))
+
+
+# 2.13.1
+
+* ***Breaking*** Changed Overriden Models usage ([#550](https://github.com/epam-cross-platform-lab/swagger-dart-code-generator/issues/550))
+* Fixed generation of allOf request bodies ([#680](https://github.com/epam-cross-platform-lab/swagger-dart-code-generator/issues/680))
+
+# 2.12.2
+
+* Fixed generation of `nullable` and `required` fields ([#650](https://github.com/epam-cross-platform-lab/swagger-dart-code-generator/issues/650))
+* Fixed generation of `putIfAbsent` for some models ([#665](https://github.com/epam-cross-platform-lab/swagger-dart-code-generator/issues/665))
+* Fixed generation of some border-cased models ([#669](https://github.com/epam-cross-platform-lab/swagger-dart-code-generator/issues/669))
+
+# 2.12.1
+* Fixed return type nullability ([#670](https://github.com/epam-cross-platform-lab/swagger-dart-code-generator/issues/670))
+* Fixed generation of DateTime return types
+
+# 2.11.13
+
+* Fixed different issues
+
+# 2.11.12
+
+* Added generation of const constructors
+* Added support of required not nullable properties ([#650](https://github.com/epam-cross-platform-lab/swagger-dart-code-generator/issues/650))
+* Fixed generation of String responses in converter ([#631](https://github.com/epam-cross-platform-lab/swagger-dart-code-generator/issues/631))
+
+# 2.11.11
+
+* Fixes some stuff related to generation DateTime, reponse types and parameters types
+
+# 2.11.10
+
+* Bump `package:http` to `^1.0.0`
+* Bump minimum dart version to `^3.0.0`
+* Fixed #625 generation of query enum parameters
+
+# 2.11.11
 
 * Fixed generation of fields of some models
 

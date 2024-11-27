@@ -76,7 +76,7 @@ abstract class SwaggerEnumsGenerator extends SwaggerGeneratorBase {
       ...enumsFromRequestBodies,
     ];
 
-    return result;
+    return result.unique((e) => e.name);
   }
 
   String generateFromMap(
@@ -132,7 +132,7 @@ ${allEnums.map((e) => e.toString()).join('\n')}
     definedParameters.forEach((key, swaggerRequestParameter) {
       final enumValues = swaggerRequestParameter.schema?.enumValues ??
           swaggerRequestParameter.items?.enumValues ??
-          [];
+          swaggerRequestParameter.enumValues;
 
       final enumNames = swaggerRequestParameter.schema?.enumNames ?? [];
 
@@ -156,17 +156,20 @@ ${allEnums.map((e) => e.toString()).join('\n')}
     swaggerRoot.paths.forEach((String path, SwaggerPath swaggerPath) {
       swaggerPath.requests
           .forEach((String requestType, SwaggerRequest swaggerRequest) {
-        final successResponse = SwaggerRequestsGenerator.getSuccessedResponse(
+        final successResponses = SwaggerRequestsGenerator.getSuccessedResponses(
             responses: swaggerRequest.responses);
-        final successResponseSchema =
-            successResponse?.schema ?? successResponse?.content?.schema;
 
-        if (successResponseSchema != null) {
-          final responseEnums = generateEnumsFromSchemaMap({
-            '${path.pascalCase}${requestType.pascalCase}\$$kResponse':
-                successResponseSchema
-          });
-          result.addAll(responseEnums);
+        for (final successResponse in successResponses) {
+          final successResponseSchema =
+              successResponse.schema ?? successResponse.content?.schema;
+
+          if (successResponseSchema != null) {
+            final responseEnums = generateEnumsFromSchemaMap({
+              '${path.pascalCase}${requestType.pascalCase}\$$kResponse':
+                  successResponseSchema
+            });
+            result.addAll(responseEnums);
+          }
         }
 
         final parameters = [
@@ -186,9 +189,15 @@ ${allEnums.map((e) => e.toString()).join('\n')}
 
           name = getValidatedClassName(name);
 
-          final enumValues = swaggerRequestParameter.schema?.enumValues ??
-              swaggerRequestParameter.items?.enumValues ??
-              [];
+          List<String> enumValues;
+
+          if (swaggerRequestParameter.enumValues.isNotEmpty) {
+            enumValues = swaggerRequestParameter.enumValues;
+          } else {
+            enumValues = swaggerRequestParameter.schema?.enumValues ??
+                swaggerRequestParameter.items?.enumValues ??
+                [];
+          }
 
           final enumNames = swaggerRequestParameter.schema?.enumNames ?? [];
 
@@ -344,9 +353,9 @@ ${allEnums.map((e) => e.toString()).join('\n')}
       );
 
       if (propertiesContainer != null) {
-        properties = propertiesContainer.properties;
+        properties = Map.from(propertiesContainer.properties);
       } else {
-        properties = schema.properties;
+        properties = Map.from(schema.properties);
       }
 
       var allOfRef = allOf.firstWhereOrNull((e) => e.hasRef);
@@ -383,5 +392,14 @@ ${allEnums.map((e) => e.toString()).join('\n')}
     }
 
     return generateEnumsContentFromModelProperties(properties, className);
+  }
+}
+
+extension Unique<E, Id> on List<E> {
+  List<E> unique([Id Function(E element)? id, bool inplace = true]) {
+    final ids = <Id>{};
+    var list = inplace ? this : List<E>.from(this);
+    list.retainWhere((x) => ids.add(id != null ? id(x) : x as Id));
+    return list;
   }
 }
