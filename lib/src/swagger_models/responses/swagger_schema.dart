@@ -1,12 +1,12 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:swagger_dart_code_generator/src/code_generators/constants.dart';
 
-part 'swagger_schema.g2.dart';
+part 'swagger_schema.g.dart';
 
 @JsonSerializable()
 class SwaggerSchema {
   SwaggerSchema({
-    this.type = '',
+    dynamic type = '',
     this.originalRef = '',
     this.enumValuesObj = const [],
     this.properties = const {},
@@ -21,43 +21,72 @@ class SwaggerSchema {
     this.required = const [],
     this.description = '',
     this.enumNames,
-    this.isNullable = false,
+    this.isNullable,
     this.hasAdditionalProperties = false,
     this.msEnum,
-  });
+    this.title = '',
+    this.readOnly = false,
+    this.writeOnly = false,
+    this.deprecated = false,
+  }) : _type = type;
 
-  @JsonKey(name: 'type', defaultValue: '')
-  String type;
+  @JsonKey(name: 'readOnly')
+  bool readOnly;
 
-  @JsonKey(name: 'format', defaultValue: '')
+  @JsonKey(name: 'writeOnly')
+  bool writeOnly;
+
+  @JsonKey(name: 'type')
+  dynamic _type;
+  String get type {
+    if (_type is String?) return _type as String? ?? '';
+    if (_type is List) {
+      for (final types in _type as List) {
+        if ((types as String?) != 'null') return types ?? '';
+      }
+    }
+    return '';
+  }
+
+  set type(dynamic value) {
+    _type = value;
+  }
+
+  @JsonKey(name: 'deprecated')
+  bool deprecated;
+
+  @JsonKey(name: 'title')
+  String title;
+
+  @JsonKey(name: 'format')
   String format;
 
-  @JsonKey(name: 'default', defaultValue: null)
+  @JsonKey(name: 'default')
   Object? defaultValue;
 
-  @JsonKey(name: 'originalRef', defaultValue: '')
+  @JsonKey(name: 'originalRef')
   String originalRef;
 
   bool get hasOriginalRef => originalRef.isNotEmpty;
 
-  @JsonKey(name: '\$ref', defaultValue: '')
+  @JsonKey(name: '\$ref')
   String ref;
 
   bool get hasRef => ref.isNotEmpty;
 
-  @JsonKey(name: 'description', defaultValue: '')
+  @JsonKey(name: 'description')
   String description;
 
-  @JsonKey(name: 'enum', defaultValue: [])
+  @JsonKey(name: 'enum')
   List<Object?> enumValuesObj;
 
-  @JsonKey(name: 'x-ms-enum', defaultValue: null)
+  @JsonKey(name: 'x-ms-enum')
   MsEnum? msEnum;
 
   List<String> get enumValues {
     final values = (msEnum?.values.isNotEmpty == true
-            ? msEnum?.values.map((e) => e.value)
-            : enumValuesObj) ??
+        ? msEnum?.values.map((e) => e.value)
+        : enumValuesObj) ??
         [];
 
     return values.map((e) => e.toString()).toList();
@@ -73,28 +102,30 @@ class SwaggerSchema {
   @JsonKey(name: 'items')
   SwaggerSchema? items;
 
-  @JsonKey(name: 'properties', defaultValue: {})
+  @JsonKey(name: 'properties')
   Map<String, SwaggerSchema> properties;
 
-  @JsonKey(name: 'nullable', defaultValue: false)
-  bool isNullable;
+  @JsonKey(name: 'nullable')
+  bool? isNullable;
+
+  bool get shouldBeNullable =>
+      isNullable == true ||
+          readOnly ||
+          writeOnly ||
+          (_type is List && (_type as List).contains('null'));
 
   @JsonKey(name: 'schema')
   SwaggerSchema? schema;
 
-  @JsonKey(name: 'oneOf', defaultValue: [])
   List<SwaggerSchema> oneOf;
 
-  @JsonKey(name: 'anyOf', defaultValue: [])
+  @JsonKey(name: 'anyOf')
   List<SwaggerSchema> anyOf;
 
-  @JsonKey(name: 'allOf', defaultValue: [])
+  @JsonKey(name: 'allOf')
   List<SwaggerSchema> allOf;
 
-  @JsonKey(
-      name: 'additionalProperties',
-      defaultValue: false,
-      fromJson: _additionalsFromJson)
+  @JsonKey(name: 'additionalProperties', fromJson: _additionalsFromJson)
   bool hasAdditionalProperties;
 
   List<String>? enumNames;
@@ -104,15 +135,12 @@ class SwaggerSchema {
         ..enumNames = ((json[kEnumNames] ?? json[kEnumVarnames]) as List?)
             ?.map((e) => e as String)
             .toList()
-        ..isNullable = (json[kIsNullable] ??
-            json[kIsNullable] ??
-            json[kNullable] ??
-            false) as bool;
+        ..isNullable = (json[kIsNullable] ?? json[kNullable] ?? false) as bool;
 
   Map<String, dynamic> toJson() => {
-        ..._$SwaggerSchemaToJson(this),
-        if (enumNames != null) kEnumNames: enumNames,
-      };
+    ..._$SwaggerSchemaToJson(this),
+    if (enumNames != null) kEnumNames: enumNames,
+  };
 }
 
 bool _additionalsFromJson(dynamic value) => value != false;
