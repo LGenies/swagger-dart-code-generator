@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'generator_options.g2.dart';
+part 'generator_options.g.dart';
 
 @JsonSerializable(fieldRename: FieldRename.snake, anyMap: true)
 class GeneratorOptions {
@@ -36,57 +36,40 @@ class GeneratorOptions {
     this.overrideEqualsAndHashcode = true,
     this.overrideToString = true,
     this.pageWidth,
+    this.scalars = const {},
     this.overridenModels = const [],
     this.generateToJsonFor = const [],
     this.multipartFileType = 'List<int>',
+<<<<<<< HEAD
     this.allNotFinal = true
+=======
+    this.urlencodedFileType = 'Map<String, String>',
+    this.generateFirstSucceedResponse = true,
+>>>>>>> upstream/master
   });
 
   /// Build options from a JSON map.
   factory GeneratorOptions.fromJson(Map<String, dynamic> json) =>
       _$GeneratorOptionsFromJson(json);
 
-  @JsonKey(defaultValue: true)
   final bool usePathForRequestNames;
-
-  @JsonKey(defaultValue: true)
+  final bool generateFirstSucceedResponse;
   final bool withBaseUrl;
-
-  @JsonKey(defaultValue: false)
   final bool addBasePathToRequests;
-
-  @JsonKey(defaultValue: null)
   final int? pageWidth;
-
-  @JsonKey(defaultValue: true)
   final bool overrideToString;
-
-  @JsonKey(defaultValue: true)
   final bool overrideEqualsAndHashcode;
-
-  @JsonKey(defaultValue: 'List<int>')
   final String multipartFileType;
-
-  @JsonKey(defaultValue: true)
+  final String urlencodedFileType;
   final bool withConverter;
-
-  @JsonKey(defaultValue: [])
-  final List<String> overridenModels;
-
-  @JsonKey(defaultValue: [])
+  final Map<String, CustomScalar> scalars;
+  final List<OverridenModelsItem> overridenModels;
   final List<String> generateToJsonFor;
-
-  @JsonKey(defaultValue: [])
   final List<String> additionalHeaders;
-
-  @JsonKey(defaultValue: [])
-  List<String> inputUrls;
-
-  @JsonKey(defaultValue: [])
-  List<String> nullableModels;
-
-  @JsonKey(defaultValue: false)
+  final List<InputUrl> inputUrls;
+  final List<String> nullableModels;
   final bool separateModels;
+<<<<<<< HEAD
 
   @JsonKey(defaultValue: true)
   final bool allNotRequired;
@@ -95,54 +78,24 @@ class GeneratorOptions {
   final bool allNotFinal;
 
   @JsonKey(defaultValue: true)
+=======
+>>>>>>> upstream/master
   final bool useRequiredAttributeForHeaders;
-
-  @JsonKey(defaultValue: false)
   final bool ignoreHeaders;
-
-  @JsonKey(defaultValue: false)
   final bool enumsCaseSensitive;
-
-  @JsonKey(defaultValue: null)
   final bool? includeIfNull;
-
-  @JsonKey(defaultValue: '')
   final String inputFolder;
-
-  @JsonKey(defaultValue: '')
   final String outputFolder;
-
-  @JsonKey(defaultValue: [])
   final List<String> classesWithNullabeLists;
-
-  @JsonKey(defaultValue: '')
   final String cutFromModelNames;
-
-  @JsonKey(defaultValue: false)
   final bool buildOnlyModels;
-
-  @JsonKey(defaultValue: '')
   final String modelPostfix;
-
-  @JsonKey(defaultValue: <DefaultValueMap>[])
   final List<DefaultValueMap> defaultValuesMap;
-
-  @JsonKey(defaultValue: <DefaultHeaderValueMap>[])
   final List<DefaultHeaderValueMap> defaultHeaderValuesMap;
-
-  @JsonKey(defaultValue: <ResponseOverrideValueMap>[])
   final List<ResponseOverrideValueMap> responseOverrideValueMap;
-
-  @JsonKey(defaultValue: [])
   final List<String> includePaths;
-
-  @JsonKey(defaultValue: [])
   final List<String> importPaths;
-
-  @JsonKey(defaultValue: '')
   final String customReturnType;
-
-  @JsonKey(defaultValue: [])
   final List<String> excludePaths;
 
   /// Convert this options instance to JSON.
@@ -203,4 +156,65 @@ class DefaultHeaderValueMap {
 
   factory DefaultHeaderValueMap.fromJson(Map<String, dynamic> json) =>
       _$DefaultHeaderValueMapFromJson(json);
+}
+
+@JsonSerializable(fieldRename: FieldRename.snake)
+class InputUrl {
+  InputUrl({
+    required this.url,
+    this.fileName,
+  });
+
+  @JsonKey()
+  final String url;
+
+  @JsonKey()
+  final String? fileName;
+
+  Map<String, dynamic> toJson() => _$InputUrlToJson(this);
+
+  factory InputUrl.fromJson(Map<String, dynamic> json) =>
+      _$InputUrlFromJson(json);
+}
+
+@JsonSerializable(fieldRename: FieldRename.snake)
+class OverridenModelsItem {
+  @JsonKey()
+  final String fileName;
+  @JsonKey()
+  final List<String> overridenModels;
+  @JsonKey()
+  final String importUrl;
+
+  OverridenModelsItem({
+    required this.fileName,
+    required this.overridenModels,
+    required this.importUrl,
+  });
+
+  Map<String, dynamic> toJson() => _$OverridenModelsItemToJson(this);
+
+  factory OverridenModelsItem.fromJson(Map<String, dynamic> json) =>
+      _$OverridenModelsItemFromJson(json);
+}
+
+@JsonSerializable(fieldRename: FieldRename.snake)
+class CustomScalar {
+  @JsonKey()
+  final String type;
+  @JsonKey()
+  final String deserialize;
+  @JsonKey(defaultValue: '')
+  final String serialize;
+
+  factory CustomScalar.fromJson(Map<String, dynamic> json) =>
+      _$CustomScalarFromJson(json);
+
+  CustomScalar({
+    required this.type,
+    required this.deserialize,
+    this.serialize = '',
+  });
+
+  Map<String, dynamic> toJson() => _$CustomScalarToJson(this);
 }

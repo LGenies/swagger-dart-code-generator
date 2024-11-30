@@ -3,9 +3,11 @@
 include: package:lints/recommended.yaml
 
 analyzer:
+  language:
+    strict-casts: true
   exclude:
     - example/**/*.dart
-    - lib/**/*.g2.dart
+    - lib/**/*.g.dart
 linter:
   rules:
     - type_annotate_public_apis

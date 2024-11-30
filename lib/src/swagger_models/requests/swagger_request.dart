@@ -4,7 +4,7 @@ import 'package:swagger_dart_code_generator/src/swagger_models/responses/swagger
 import '../responses/swagger_response.dart';
 import 'swagger_request_parameter.dart';
 
-part 'swagger_request.g2.dart';
+part 'swagger_request.g.dart';
 
 @JsonSerializable()
 class SwaggerRequest {
@@ -18,30 +18,34 @@ class SwaggerRequest {
     this.produces = const [],
     this.security = const [],
     this.requestBody,
+    this.deprecated = false,
   });
 
-  @JsonKey(name: 'summary', defaultValue: '')
+  @JsonKey(name: 'summary')
   String summary;
 
-  @JsonKey(name: 'description', defaultValue: '')
+  @JsonKey(name: 'description')
   String description;
 
-  @JsonKey(name: 'operationId', defaultValue: '')
+  @JsonKey(name: 'deprecated')
+  bool deprecated;
+
+  @JsonKey(name: 'operationId')
   String operationId;
 
-  @JsonKey(name: 'consumes', defaultValue: [])
+  @JsonKey(name: 'consumes')
   List<String> consumes;
 
-  @JsonKey(name: 'produces', defaultValue: [])
+  @JsonKey(name: 'produces')
   List<String> produces;
 
-  @JsonKey(name: 'responses', defaultValue: {})
+  @JsonKey(name: 'responses')
   Map<String, SwaggerResponse> responses;
 
   @JsonKey(name: 'security', fromJson: _securityFromJson)
   List<String> security;
 
-  @JsonKey(name: 'parameters', defaultValue: [])
+  @JsonKey(name: 'parameters')
   List<SwaggerRequestParameter> parameters;
 
   @JsonKey(name: 'requestBody')
@@ -58,7 +62,7 @@ class RequestBody {
   @JsonKey(name: 'content', fromJson: _contentFromJson)
   RequestContent? content;
 
-  @JsonKey(name: '\$ref', defaultValue: '')
+  @JsonKey(name: '\$ref')
   String ref;
 
   bool get hasRef => ref.isNotEmpty;
@@ -94,7 +98,7 @@ RequestContent? _contentFromJson(Map<String, dynamic>? map) {
     final multipart = map['application/x-www-form-urlencoded']['schema']
         as Map<String, dynamic>;
     return RequestContent(
-        isMultipart: true, schema: SwaggerSchema.fromJson(multipart));
+        isUrlencoded: true, schema: SwaggerSchema.fromJson(multipart));
   }
 
   final content = map.values.first as Map<String, dynamic>;
@@ -106,6 +110,7 @@ RequestContent? _contentFromJson(Map<String, dynamic>? map) {
 class RequestContent {
   RequestContent({
     this.isMultipart,
+    this.isUrlencoded,
     this.schema,
   });
 
@@ -113,6 +118,7 @@ class RequestContent {
   final SwaggerSchema? schema;
 
   final bool? isMultipart;
+  final bool? isUrlencoded;
 
   Map<String, dynamic> toJson() => _$RequestContentToJson(this);
 
